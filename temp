@@ -1,0 +1,1 @@
+transmission-cli http://itorrents.org/torrent/75E82FFAF0804F930B287039B6AD0955FF7282AA.torrent -w ~/Downloads
