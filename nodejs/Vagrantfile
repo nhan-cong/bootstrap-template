@@ -1,27 +1,31 @@
 # -*- mode: ruby -*-
+# # vi: set ft=ruby :
 
-# vi: set ft=ruby :
+# Specify minimum Vagrant version and Vagrant API version
+Vagrant.require_version '>= 1.8.0'
+VAGRANTFILE_API_VERSION = '2'
 
 boxes = [
     {
-        :name => "serverxcard",
-        :eth1 => "192.168.10.11",
-        :eth2 => "192.168.0.150",
-        :mem => "512",
+        :name => "nodejs",
+        # :eth1 => "192.168.10.11",
+        # :eth2 => "192.168.0.150",
+        :mem => "1024",
         :cpu => "1"
     }
 ]
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "xcardserver"
+  config.vm.box = "geerlingguy/centos7"
+  config.vm.box_version = "1.2.24"
 
   # Turn off shared folders
-  config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=775', 'fmode=775'], disable:true
+  # config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=775', 'fmode=775'], disable:true
 
 
   #config.vm.synced_folder "~/Virtual/webrtc", "/home/vagrant", :mount_options => ['dmode=775', 'fmode=775']
-  config.vm.synced_folder "/NTex/Web/openCard", "/srv/www/GiftCard", :mount_options => ['dmode=777', 'fmode=777']
+
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
       config.vm.hostname = opts[:name]
@@ -32,8 +36,9 @@ Vagrant.configure(2) do |config|
         v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
         v.name = opts[:name]
       end
-      config.vm.network "public_network",ip: opts[:eth2]
-      config.vm.network "private_network", ip: opts[:eth1]
+      config.vm.network "public_network",  bridge:"wlp2s0"  #wlp2s0
+      # config.vm.network "public_network",ip: opts[:eth2]
+      # config.vm.network "private_network", ip: opts[:eth1]
     end
   end
 end
